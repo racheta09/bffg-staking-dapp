@@ -1,113 +1,363 @@
-import Image from 'next/image'
+"use client"
+import Auth from "@/components/auth"
+import { Button, Box, Grid, Modal, Stack } from "@mui/material"
+import {
+    useContractWrite,
+    useContractRead,
+    useContract,
+    useAddress,
+    Web3Button,
+} from "@thirdweb-dev/react"
+import { useState } from "react"
+import erc20abi from "../assests/erc20abi.json"
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    const stakeAddress = "0xeC0EDe248ae913c1EeD13bE8D5a22589DF2F1692"
+    const tokenAddress = "0xb4a432E8e344D04328202986E1C64c5f5BED11B9"
+    const address = useAddress()
+    const { data: stakeContract } = useContract(stakeAddress)
+    // const { data: tokenAddress } = useContractRead(stakeContract, "token")
+    const { data: tokenContract } = useContract(tokenAddress, erc20abi)
+    const { data: owner } = useContractRead(stakeContract, "owner")
+    const { data: accumulated } = useContractRead(
+        stakeContract,
+        "TotalAccumulatedReward",
+        [address]
+    )
+    const { data: pending } = useContractRead(
+        stakeContract,
+        "TotalPendingReward",
+        [address]
+    )
+    const { data: staked } = useContractRead(stakeContract, "CurrentlyStaked", [
+        address,
+    ])
+    const { data: withdrawn } = useContractRead(
+        stakeContract,
+        "TotalWithdrawal",
+        [address]
+    )
+    const { data: delegates } = useContractRead(stakeContract, "TotalDelegates")
+    const { data: poolstake } = useContractRead(
+        stakeContract,
+        "TotalStakedInPool"
+    )
+    const { data: symbol } = useContractRead(tokenContract, "symbol")
+    const { data: tokenBalance } = useContractRead(tokenContract, "balanceOf", [
+        address,
+    ])
+    const { data: approved } = useContractRead(tokenContract, "allowance", [
+        address,
+        stakeAddress,
+    ])
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+    const [formData, setFormData] = useState({
+        stakeAmount: "0",
+        stakeTime: "0",
+        restakeAmount: "0",
+        restakeTime: "0",
+    })
+    const [modalState, setModalState] = useState({
+        stake: false,
+        restake: false,
+    })
+    const { mutateAsync: unstake } = useContractWrite(stakeContract, "UnStake")
+    const { mutateAsync: withdraw } = useContractWrite(
+        stakeContract,
+        "Withdraw"
+    )
+    const { mutateAsync: claim } = useContractWrite(stakeContract, "Claim")
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+    // const handleModals = (modal: string) => {
+    //     setModalState((prevState) => ({ ...prevState, [modal]: true }))
+    // }
+
+    const style = {
+        position: "absolute" as "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: 400,
+        bgcolor: "background.paper",
+        border: "2px solid #000",
+        boxShadow: 24,
+        p: 4,
+    }
+    return (
+        <Grid
+            container
+            // height="100vh"
+            alignItems="center"
+            justifyContent="center"
+            direction="column"
+            className="pt-10"
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+            <Auth>
+                <h1 className="text-center my-10">
+                    Welcome to BFF Gram Staking Dapp
+                </h1>
+                <Box className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-4/5">
+                    <Box
+                        className="border-4 border-blue-400 border-solid shadow flex flex-col items-center my-4 py-4 border-r-4 justify-center"
+                        // sx={{
+                        //     boxShadow: 3,
+                        //     borderRadius: 2,
+                        //     p: 2,
+                        //     // width: 300,
+                        //     // height: 300,
+                        //     margin: "auto",
+                        //     // border: "1px solid #ccc",
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+                        // }}
+                    >
+                        <h2>
+                            Token Balance:{" "}
+                            {(parseInt(tokenBalance) * 1e-18).toFixed(2)}{" "}
+                            {symbol}
+                        </h2>
+                        <h2>Claimed Rewards: {(accumulated * 1e-18).toFixed(4)} {symbol}</h2>
+                        <h2>Pending Rewards: {(pending * 1e-18).toFixed(2)} {symbol}</h2>
+                        <h2>Staked Amount: {(staked * 1e-18).toFixed(2)} {symbol}</h2>
+                        <h2>Withdrawn Amount: {(withdrawn * 1e-18).toFixed(2)} {symbol}</h2>
+                        <h2>Total Delegates: {delegates?.toString()}</h2>
+                        <h2>Total Pool Stake: {(poolstake * 1e-18).toFixed(2)} {symbol}</h2>
+                    </Box>
+                    <Box className="border-4 border-blue-400 border-solid shadow flex flex-col items-center border-r-4 my-4 py-4 justify-center">
+                        <Button
+                            variant="contained"
+                            onClick={() =>
+                                setModalState((prevState) => ({
+                                    ...prevState,
+                                    stake: true,
+                                }))
+                            }
+                            className="w-[150px] h-[40px] m-2"
+                        >
+                            Stake
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={() =>
+                                setModalState((prevState) => ({
+                                    ...prevState,
+                                    restake: true,
+                                }))
+                            }
+                            className="w-[150px] h-[40px] m-2"
+                        >
+                            Restake
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={async () => await unstake({ args: [] })}
+                            className="w-[150px] h-[40px] m-2"
+                        >
+                            Unstake
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={async () => await withdraw({ args: [] })}
+                            className="w-[150px] h-[40px] m-2"
+                        >
+                            Withdraw
+                        </Button>
+                        <Button
+                            variant="contained"
+                            onClick={async () => await claim({ args: [] })}
+                            className="w-[150px] h-[40px] m-2"
+                        >
+                            Claim
+                        </Button>
+                        <Modal
+                            open={modalState.stake}
+                            onClose={() => {
+                                setModalState((prevState) => ({
+                                    ...prevState,
+                                    stake: false,
+                                }))
+                            }}
+                        >
+                            <Box sx={style}>
+                                <Stack gap={2}>
+                                    <div className="">Stake Amount</div>
+                                    <input
+                                        type="text"
+                                        onChange={(e) =>
+                                            setFormData((prevState) => ({
+                                                ...prevState,
+                                                stakeAmount: e.target.value,
+                                            }))
+                                        }
+                                        value={formData.stakeAmount}
+                                        className=""
+                                    />
+                                    <label>Stake Time</label>
+                                    <input
+                                        type="text"
+                                        onChange={(e) =>
+                                            setFormData((prevState) => ({
+                                                ...prevState,
+                                                stakeTime: e.target.value,
+                                            }))
+                                        }
+                                        value={formData.stakeTime}
+                                    />
+                                    {parseInt(approved) <
+                                    parseFloat(formData.stakeAmount) * 1e18 ? (
+                                        <Web3Button
+                                            contractAddress={tokenAddress}
+                                            contractAbi={erc20abi}
+                                            action={async (contract) => {
+                                                await contract.call("approve", [
+                                                    stakeAddress,
+                                                    (
+                                                        parseInt(
+                                                            formData.stakeAmount
+                                                        ) * 1e18
+                                                    ).toLocaleString(
+                                                        "fullwide",
+                                                        { useGrouping: false }
+                                                    ),
+                                                ])
+                                            }}
+                                        >
+                                            Approve
+                                        </Web3Button>
+                                    ) : (
+                                        <Web3Button
+                                            contractAddress={stakeAddress}
+                                            action={async (contract) => {
+                                                await contract.call("Stake", [
+                                                    (
+                                                        parseFloat(
+                                                            formData.stakeAmount
+                                                        ) * 1e18
+                                                    ).toLocaleString(
+                                                        "fullwide",
+                                                        { useGrouping: false }
+                                                    ),
+                                                    parseInt(
+                                                        formData.stakeTime
+                                                    ) * 86400,
+                                                ])
+                                            }}
+                                        >
+                                            Stake
+                                        </Web3Button>
+                                    )}
+                                </Stack>
+                            </Box>
+                        </Modal>
+                        <Modal
+                            open={modalState.restake}
+                            onClose={() => {
+                                setModalState((prevState) => ({
+                                    ...prevState,
+                                    restake: false,
+                                }))
+                            }}
+                        >
+                            <Box sx={style}>
+                                <Stack gap={2}>
+                                    <label>Restake Amount</label>
+                                    <input
+                                        type="text"
+                                        onChange={(e) =>
+                                            setFormData((prevState) => ({
+                                                ...prevState,
+                                                restakeAmount: e.target.value,
+                                            }))
+                                        }
+                                        value={formData.restakeAmount}
+                                    />
+                                    <label>Restake Time</label>
+                                    <input
+                                        type="text"
+                                        onChange={(e) =>
+                                            setFormData((prevState) => ({
+                                                ...prevState,
+                                                restakeTime: e.target.value,
+                                            }))
+                                        }
+                                        value={formData.restakeTime}
+                                    />
+                                    {parseInt(approved) <
+                                    parseFloat(formData.restakeAmount) *
+                                        1e18 ? (
+                                        <Web3Button
+                                            contractAddress={tokenAddress}
+                                            contractAbi={erc20abi}
+                                            action={async (contract) => {
+                                                await contract.call("approve", [
+                                                    stakeAddress,
+                                                    (
+                                                        parseFloat(
+                                                            formData.restakeAmount
+                                                        ) * 1e18
+                                                    ).toLocaleString(
+                                                        "fullwide",
+                                                        { useGrouping: false }
+                                                    ),
+                                                ])
+                                            }}
+                                        >
+                                            Approve
+                                        </Web3Button>
+                                    ) : (
+                                        <Web3Button
+                                            contractAddress={stakeAddress}
+                                            action={async (contract) => {
+                                                await contract.call("ReStake", [
+                                                    (
+                                                        parseFloat(
+                                                            formData.restakeAmount
+                                                        ) * 1e18
+                                                    ).toLocaleString(
+                                                        "fullwide",
+                                                        { useGrouping: false }
+                                                    ),
+                                                    parseInt(
+                                                        formData.restakeTime
+                                                    ) * 86400,
+                                                ])
+                                            }}
+                                        >
+                                            Restake
+                                        </Web3Button>
+                                    )}
+                                </Stack>
+                            </Box>
+                        </Modal>
+                    </Box>
+                    {/* <Box className="space-y-4 flex flex-col">
+                            <Web3Button
+                                contractAddress={stakeAddress}
+                                action={async (contract) => {
+                                    await contract.call("Unstake")
+                                }}
+                                className="bg-blue-600 text-white"
+                            >
+                                Unstake
+                            </Web3Button>
+                            <Web3Button
+                                contractAddress={stakeAddress}
+                                action={async (contract) => {
+                                    await contract.call("Withdraw")
+                                }}
+                            >
+                                Withdraw
+                            </Web3Button>
+                            <Web3Button
+                                contractAddress={stakeAddress}
+                                action={async (contract) => {
+                                    await contract.call("Claim")
+                                }}
+                            >
+                                Claim
+                            </Web3Button>
+                        </Box> */}
+                </Box>
+            </Auth>
+        </Grid>
+    )
 }
