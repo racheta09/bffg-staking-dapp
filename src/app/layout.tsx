@@ -5,10 +5,10 @@ import { lightTheme } from "./theme/themes"
 import { ThemeProvider, CssBaseline, Toolbar } from "@mui/material"
 import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react"
 
-export const metadata = {
-    title: "BFF Gram Staking Dapp",
-    description: "BFF Gram Staking Dapp",
-}
+// export const metadata = {
+//     title: "BFF Gram Staking Dapp",
+//     description: "BFF Gram Staking Dapp",
+// }
 
 export default function RootLayout({
     children,
@@ -18,6 +18,7 @@ export default function RootLayout({
     const activeChainId = ChainId.BinanceSmartChainTestnet
     return (
         <html lang="en">
+            <head><title>BFF Gram Staking Dapp</title></head>
             <ThirdwebProvider activeChain={activeChainId}>
                 <ThemeProvider theme={lightTheme}>
                     <CssBaseline />
