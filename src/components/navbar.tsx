@@ -12,6 +12,7 @@ import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 import Image from "next/image"
+import { ConnectWallet } from "@thirdweb-dev/react"
 
 interface Props {
     /**
@@ -46,6 +47,7 @@ export default function NavBar(props: Props) {
                         </ListItemButton>
                     </ListItem>
                 ))}
+                <ConnectWallet />
             </List>
         </Box>
     )
@@ -87,6 +89,7 @@ export default function NavBar(props: Props) {
                                 {item}
                             </Button>
                         ))}
+                        <ConnectWallet />
                     </Box>
                 </Toolbar>
             </AppBar>
