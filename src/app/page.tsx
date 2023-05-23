@@ -12,12 +12,12 @@ import { useState } from "react"
 import erc20abi from "../assests/erc20abi.json"
 
 export default function Home() {
-    const stakeAddress = "0xeC0EDe248ae913c1EeD13bE8D5a22589DF2F1692"
-    const tokenAddress = "0xb4a432E8e344D04328202986E1C64c5f5BED11B9"
+    const stakeAddress = "0x9aacf226875A2DAC816a262d4a98A617d0bcB0Ca"
+    const tokenAddress = "0xC707c5F80286E1754f8234EF244A7cB2F8086f6F"
     const address = useAddress()
     const { data: stakeContract } = useContract(stakeAddress)
     // const { data: tokenAddress } = useContractRead(stakeContract, "token")
-    const { data: tokenContract } = useContract(tokenAddress, erc20abi)
+    const { data: tokenContract } = useContract(tokenAddress)
     const { data: owner } = useContractRead(stakeContract, "owner")
     const { data: accumulated } = useContractRead(
         stakeContract,
@@ -77,7 +77,7 @@ export default function Home() {
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        width: 400,
+        width: 600,
         bgcolor: "background.paper",
         border: "2px solid #000",
         boxShadow: 24,
@@ -98,7 +98,7 @@ export default function Home() {
                 </h1>
                 <Box className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-4/5">
                     <Box
-                        className="border-4 border-blue-400 border-solid shadow flex flex-col items-center my-4 py-4 border-r-4 justify-center"
+                        className="border-4 border-blue-400 border-solid shadow flex flex-col pl-2 lg:pl-4 my-2 py-2 border-r-4"
                         // sx={{
                         //     boxShadow: 3,
                         //     borderRadius: 2,
@@ -111,18 +111,43 @@ export default function Home() {
                         // }}
                     >
                         <h2>
-                            Token Balance:{" "}
-                            {(parseInt(tokenBalance) * 1e-18).toFixed(2)}{" "}
+                            Token Balance:
+                            <br />
+                            {(parseInt(tokenBalance) * 1e-9).toFixed(2)}{" "}
                             {symbol}
                         </h2>
-                        <h2>Claimed Rewards: {(accumulated * 1e-18).toFixed(4)} {symbol}</h2>
-                        <h2>Pending Rewards: {(pending * 1e-18).toFixed(2)} {symbol}</h2>
-                        <h2>Staked Amount: {(staked * 1e-18).toFixed(2)} {symbol}</h2>
-                        <h2>Withdrawn Amount: {(withdrawn * 1e-18).toFixed(2)} {symbol}</h2>
-                        <h2>Total Delegates: {delegates?.toString()}</h2>
-                        <h2>Total Pool Stake: {(poolstake * 1e-18).toFixed(2)} {symbol}</h2>
+                        <h2>
+                            Claimed Rewards:
+                            <br />
+                            {(accumulated * 1e-9).toFixed(4)} {symbol}
+                        </h2>
+                        <h2>
+                            Pending Rewards:
+                            <br />
+                            {(pending * 1e-9).toFixed(2)} {symbol}
+                        </h2>
+                        <h2>
+                            Staked Amount:
+                            <br />
+                            {(staked * 1e-9).toFixed(2)} {symbol}
+                        </h2>
+                        <h2>
+                            Withdrawn Amount:
+                            <br />
+                            {(withdrawn * 1e-9).toFixed(2)} {symbol}
+                        </h2>
+                        <h2>
+                            Total Delegates:
+                            <br />
+                            {delegates?.toString()}
+                        </h2>
+                        <h2>
+                            Total Pool Stake:
+                            <br />
+                            {(poolstake * 1e-9).toFixed(2)} {symbol}
+                        </h2>
                     </Box>
-                    <Box className="border-4 border-blue-400 border-solid shadow flex flex-col items-center border-r-4 my-4 py-4 justify-center">
+                    <Box className="border-4 border-blue-400 border-solid shadow flex flex-col items-center border-r-4 my-2 py-2 justify-center">
                         <Button
                             variant="contained"
                             onClick={() =>
@@ -180,6 +205,9 @@ export default function Home() {
                             <Box sx={style}>
                                 <Stack gap={2}>
                                     <div className="">Stake Amount</div>
+                                    <span className="text-red-600">
+                                        *minimum stake amount is 100 {symbol}
+                                    </span>
                                     <input
                                         type="text"
                                         onChange={(e) =>
@@ -189,9 +217,14 @@ export default function Home() {
                                             }))
                                         }
                                         value={formData.stakeAmount}
-                                        className=""
+                                        className="h-8"
                                     />
                                     <label>Stake Time</label>
+                                    <span className="text-red-600">
+                                        *stake duration should be between 15-90
+                                        days
+                                    </span>
+
                                     <input
                                         type="text"
                                         onChange={(e) =>
@@ -201,6 +234,7 @@ export default function Home() {
                                             }))
                                         }
                                         value={formData.stakeTime}
+                                        className="h-8"
                                     />
                                     {parseInt(approved) <
                                     parseFloat(formData.stakeAmount) * 1e18 ? (
@@ -260,6 +294,9 @@ export default function Home() {
                             <Box sx={style}>
                                 <Stack gap={2}>
                                     <label>Restake Amount</label>
+                                    <span className="text-red-600">
+                                        *minimum restake amount is 100 {symbol}
+                                    </span>
                                     <input
                                         type="text"
                                         onChange={(e) =>
@@ -269,8 +306,13 @@ export default function Home() {
                                             }))
                                         }
                                         value={formData.restakeAmount}
+                                        className="h-8"
                                     />
                                     <label>Restake Time</label>
+                                    <span className="text-red-600">
+                                        *restake duration should be between
+                                        15-90 days
+                                    </span>
                                     <input
                                         type="text"
                                         onChange={(e) =>
@@ -280,6 +322,7 @@ export default function Home() {
                                             }))
                                         }
                                         value={formData.restakeTime}
+                                        className="h-8"
                                     />
                                     {parseInt(approved) <
                                     parseFloat(formData.restakeAmount) *

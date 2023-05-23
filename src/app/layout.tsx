@@ -15,10 +15,12 @@ export default function RootLayout({
 }: {
     children: React.ReactNode
 }) {
-    const activeChainId = ChainId.BinanceSmartChainTestnet
+    const activeChainId = ChainId.BinanceSmartChainMainnet
     return (
         <html lang="en">
-            <head><title>BFF Gram Staking Dapp</title></head>
+            <head>
+                <title>BFF Gram Staking Dapp</title>
+            </head>
             <ThirdwebProvider activeChain={activeChainId}>
                 <ThemeProvider theme={lightTheme}>
                     <CssBaseline />
