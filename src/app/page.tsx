@@ -98,7 +98,7 @@ export default function Home() {
                 </h1>
                 <Box className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-4/5">
                     <Box
-                        className="border-4 border-blue-400 border-solid shadow flex flex-col pl-2 lg:pl-4 my-2 py-2 border-r-4"
+                        className="border-4 bg-red-600 text-white border-black border-solid shadow flex flex-col pl-2 lg:pl-4 my-2 py-2 border-r-4"
                         // sx={{
                         //     boxShadow: 3,
                         //     borderRadius: 2,
@@ -147,7 +147,8 @@ export default function Home() {
                             {(poolstake * 1e-9).toFixed(2)} {symbol}
                         </h2>
                     </Box>
-                    <Box className="border-4 border-blue-400 border-solid shadow flex flex-col items-center border-r-4 my-2 py-2 justify-center">
+                    <Box
+                        className="border-4  bg-red-600 border-black border-solid shadow flex flex-col items-center border-r-4 my-2 py-2 justify-center">
                         <Button
                             variant="contained"
                             onClick={() =>

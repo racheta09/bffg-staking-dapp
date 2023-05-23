@@ -13,6 +13,7 @@ import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
 import Image from "next/image"
 import { ConnectWallet } from "@thirdweb-dev/react"
+import Link from "next/link"
 
 interface Props {
     /**
@@ -36,7 +37,7 @@ export default function NavBar(props: Props) {
     const drawer = (
         <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
             <Typography variant="h6" sx={{ my: 2 }}>
-                <Image src="/logo.png" alt="logo" width={229} height={73} />
+                {/* <Image src="/logo.png" alt="logo" width={229} height={73} /> */}
             </Typography>
             <Divider />
             <List>
@@ -83,6 +84,14 @@ export default function NavBar(props: Props) {
                             height={73}
                         />
                     </Typography>
+                    <Link href="https://bffgram.com/" className="flex items-center m-auto sm:hidden mt-2 pt-2">
+                        <Image
+                            src="/logo.png"
+                            alt="logo"
+                            width={229}
+                            height={73}
+                        />
+                    </Link>
                     <Box sx={{ display: { xs: "none", sm: "block" } }}>
                         {navItems.map((item) => (
                             <Button key={item} sx={{ color: "#fff" }}>
