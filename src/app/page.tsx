@@ -148,7 +148,7 @@ export default function Home() {
                         </h2>
                     </Box>
                     <Box
-                        className="border-4  bg-red-600 border-black border-solid shadow flex flex-col items-center border-r-4 my-2 py-2 justify-center">
+                        className="border-4  bg-red-600 border-black border-solid shadow flex flex-col items-center border-r-4 my-2 py-2 justify-center gap-2">
                         <Button
                             variant="contained"
                             onClick={() =>
