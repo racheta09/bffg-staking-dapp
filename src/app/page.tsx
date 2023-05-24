@@ -83,7 +83,7 @@ export default function Home() {
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        width: 600,
+        width: 400,
         bgcolor: "background.paper",
         border: "2px solid #000",
         boxShadow: 24,
@@ -99,12 +99,12 @@ export default function Home() {
             className="pt-10"
         >
             <Auth>
-                <h1 className={`${font.className} "text-center mt-10 fon"`}>
+                <h1 className={`${font.className} "text-center mt-10"`}>
                     Welcome to BFF Gram Staking Platform
                 </h1>
-                <h2 className={`${font.className} "text-center mb-4"`}>
+                <h1 className={`${font.className} "text-center mb-4"`}>
                     Stake and Earn upto 150% APR
-                </h2>
+                </h1>
                 <Box className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-4/5">
                     <Box
                         className="border-4 bg-red-600 text-white border-black border-solid shadow flex flex-col pl-2 lg:pl-4 my-2 py-2 border-r-4"

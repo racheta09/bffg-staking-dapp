@@ -77,14 +77,22 @@ export default function NavBar(props: Props) {
                             display: { xs: "none", sm: "block" },
                         }}
                     >
-                        <Image
-                            src="/logo.png"
-                            alt="logo"
-                            width={229}
-                            height={73}
-                        />
+                        <Link
+                            href="https://www.bffgram.com/"
+                            className="flex items-center m-auto mt-2 pt-2"
+                        >
+                            <Image
+                                src="/logo.png"
+                                alt="logo"
+                                width={229}
+                                height={73}
+                            />
+                        </Link>
                     </Typography>
-                    <Link href="https://bffgram.com/" className="flex items-center m-auto sm:hidden mt-2 pt-2">
+                    <Link
+                        href="https://www.bffgram.com/"
+                        className="flex items-center m-auto sm:hidden mt-2 pt-2"
+                    >
                         <Image
                             src="/logo.png"
                             alt="logo"
