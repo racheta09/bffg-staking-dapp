@@ -1,6 +1,6 @@
 "use client"
 import Auth from "@/components/auth"
-import { Button, Box, Grid, Modal, Stack } from "@mui/material"
+import { Box, Grid, Modal, Stack } from "@mui/material"
 import {
     useContractWrite,
     useContractRead,
@@ -102,7 +102,7 @@ export default function Home() {
                 <h1 className={`${font.className} "text-center mt-10 fon"`}>
                     Welcome to BFF Gram Staking Platform
                 </h1>
-                <h2 className="text-center mb-4">
+                <h2 className={`${font.className} "text-center mb-4"`}>
                     Stake and Earn upto 150% APR
                 </h2>
                 <Box className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-4/5">
@@ -156,9 +156,9 @@ export default function Home() {
                             {(poolstake * 1e-9).toFixed(2)} {symbol}
                         </h2>
                     </Box>
-                    <Box className="border-4  bg-red-600 border-black border-solid shadow flex flex-col items-center border-r-4 my-2 py-2 justify-center gap-2">
-                        <Button
-                            variant="contained"
+                    <Box className="border-4 bg-red-600 border-black border-solid shadow flex flex-col items-center border-r-4 my-2 py-2 justify-center gap-2">
+                        <button
+                            // variant="contained"
                             onClick={() =>
                                 setModalState((prevState) => ({
                                     ...prevState,
@@ -168,9 +168,9 @@ export default function Home() {
                             className="w-[150px] h-[40px] m-2 bg-white text-black text-xl"
                         >
                             Stake
-                        </Button>
-                        <Button
-                            variant="contained"
+                        </button>
+                        <button
+                            // variant="contained"
                             onClick={() =>
                                 setModalState((prevState) => ({
                                     ...prevState,
@@ -180,28 +180,28 @@ export default function Home() {
                             className="w-[150px] h-[40px] m-2 bg-white text-black text-xl"
                         >
                             Restake
-                        </Button>
-                        <Button
-                            variant="contained"
+                        </button>
+                        <button
+                            // variant="contained"
                             onClick={async () => await unstake({ args: [] })}
                             className="w-[150px] h-[40px] m-2 bg-white text-black text-xl"
                         >
                             Unstake
-                        </Button>
-                        <Button
-                            variant="contained"
+                        </button>
+                        <button
+                            // variant="contained"
                             onClick={async () => await withdraw({ args: [] })}
                             className="w-[150px] h-[40px] m-2 bg-white text-black text-xl"
                         >
                             Withdraw
-                        </Button>
-                        <Button
-                            variant="contained"
+                        </button>
+                        <button
+                            // variant="contained"
                             onClick={async () => await claim({ args: [] })}
                             className="w-[150px] h-[40px] m-2 bg-white text-black text-xl"
                         >
                             Claim
-                        </Button>
+                        </button>
                         <Modal
                             open={modalState.stake}
                             onClose={() => {
